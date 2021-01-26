@@ -31,9 +31,11 @@ func main() {
 	}
 	go host()
 
-	wg.Add(5)
+	wg.Add(15)
 	for i := 0; i < 5; i++ {
-		go philos[i].eat()
+		for j := 0; j < 3; j++ {
+			go philos[i].eat()
+		}
 	}
 	wg.Wait()
 }
@@ -56,19 +58,19 @@ func newPhilo(i int) *philo {
 }
 
 func (p philo) eat() {
-	for i := 0; i < 3; i++ {
-		<-chPermit
+	//for i := 0; i < 3; i++ {
+	<-chPermit
 
-		p.philoChopSs[0].Lock()
-		p.philoChopSs[1].Lock()
+	p.philoChopSs[0].Lock()
+	p.philoChopSs[1].Lock()
 
-		fmt.Println("starting to eat", p.num)
-		fmt.Println("finishing eating", p.num)
+	fmt.Println("starting to eat", p.num)
+	fmt.Println("finishing eating", p.num)
 
-		p.philoChopSs[1].Unlock()
-		p.philoChopSs[0].Unlock()
+	p.philoChopSs[1].Unlock()
+	p.philoChopSs[0].Unlock()
 
-		chDone <- 1
-	}
+	chDone <- 1
+	//}
 	wg.Done()
 }
